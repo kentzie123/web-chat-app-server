@@ -1,37 +1,37 @@
-const express = require("express");
-const http = require("http");
-const socketIO = require("socket.io");
-const cors = require("cors");
-const pool = require('./lib/db');
+// server.js or index.js
+import express from 'express';
+import http from 'http';
+import { Server as SocketIO } from 'socket.io';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import pool from './config/db.js';
+import authRoutes from './routes/auth.route.js';
 
-
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server, {
+const io = new SocketIO(server, {
   cors: {
-    origin: "*"
-  }
+    origin: '*',
+  },
 });
 
 app.use(cors());
 app.use(express.json());
 
-const authRoutes = require('./routes/auth.route');
-
 app.use('/api/auth', authRoutes);
-
 
 const PORT = process.env.PORT || 5000;
 
+io.on('connection', (socket) => {
+  console.log('User connected', socket.id);
 
-io.on("connection", (socket) => {
-  console.log("User connected", socket.id);
-
-
-  socket.on("disconnect", () => console.log("User disconnected"));
-  
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
