@@ -1,13 +1,14 @@
-// server.js or index.js
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import http from 'http';
 import { Server as SocketIO } from 'socket.io';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import pool from './config/db.js';
-import authRoutes from './routes/auth.route.js';
 
-dotenv.config();
+// Routes
+import authRoutes from './routes/auth.route.js';
+import messageRoutes from './routes/mesages.route.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/messages', messageRoutes);
 
 const PORT = process.env.PORT || 5000;
 
