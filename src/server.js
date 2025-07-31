@@ -5,6 +5,7 @@ import express from 'express';
 import http from 'http';
 import { Server as SocketIO } from 'socket.io';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 // Routes
 import authRoutes from './routes/auth.route.js';
@@ -18,9 +19,14 @@ const io = new SocketIO(server, {
   },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5174',
+  credentials: true             
+}));
 app.use(express.json());
+app.use(cookieParser()); // 👈 ADD THIS before routes
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 

@@ -3,6 +3,7 @@ import cloudinary from '../config/cloudinary.js';
 
 export const uploadImage = async (filePath) => {
   try {
+    console.log('Uploading image from:', filePath);
     const stats = fs.statSync(filePath);
     const fileSizeInMB = stats.size / (1024 * 1024);
 

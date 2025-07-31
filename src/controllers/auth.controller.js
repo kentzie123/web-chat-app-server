@@ -1,5 +1,5 @@
 // Utils
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/generateToken.js';
 
 // Response handler
@@ -43,7 +43,7 @@ export const signUp = async (req, res) => {
     return error(res, err.message);
   }
 
-  generateToken(data[0].id, res);
+  generateToken({id:data[0].id, fullname:data[0].fullname, email:data[0].email, profile_pic: data[0].profile_pic}, res);
 
   return success(res, data[0], 201);  
 }
