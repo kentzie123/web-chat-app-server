@@ -12,14 +12,15 @@ import { getUsers,addUser, getUserByEmail } from '../services/user.service.js';
 
 // Fetch All Users Controller
 export const getAllUsers = async (req, res) => {
-  const { data, error: err } = await getUsers();
+  const { data, error } = await getUsers();
 
-  if(err || !data){
-     return error(res, err.message);
-  } // or if(err) return error(res, err.message)
+  if (error || !data) {
+    return error(res, error?.message || 'Something went wrong');
+  }
 
   return success(res, data);
 }
+
 
 
 // Register new users
@@ -42,10 +43,15 @@ export const signUp = async (req, res) => {
   if(err || data.length === 0){
     return error(res, err.message);
   }
-
-  generateToken({id:data[0].id, fullname:data[0].fullname, email:data[0].email, profile_pic: data[0].profile_pic}, res);
-
-  return success(res, data[0], 201);  
+  
+  const userInfo = data[0];
+  generateToken({id:userInfo.id, fullname:userInfo.fullname, email:userInfo.email, profile_pic: userInfo.profile_pic}, res);
+  return success(res, {
+    id: userInfo.id,
+    fullname: userInfo.fullname,
+    email: userInfo.email,
+    profilePic: userInfo.profile_pic
+  }, 201);
 }
 
 
@@ -70,7 +76,7 @@ export const login = async(req, res) => {
     return error(res, 'Invalid credentials', 400);
   }
 
-  generateToken(userInfo.id, res);
+  generateToken({id:userInfo.id, fullname:userInfo.fullname, email:userInfo.email, profile_pic: userInfo.profile_pic}, res);
 
   return success(res, {
     id: userInfo.id,
@@ -92,3 +98,13 @@ export const logout = (req, res) => {
     return error(res, 'Internal Server Error');
   }
 };
+
+
+export const checkAuth = (req, res) => {
+  try {
+    return success(res, req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    return error(res, 'Internal Server Error');
+  }
+}

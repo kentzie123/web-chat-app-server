@@ -1,7 +1,7 @@
 import supabase from "../config/db.js";
 
 export const getUsers = async () => {
-    return await supabase.from('users').select('*');
+    return await supabase.from('users').select('id, fullname, email, profile_pic');
 }
 
 export const addUser = async (user) => {

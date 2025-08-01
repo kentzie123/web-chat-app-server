@@ -1,5 +1,5 @@
 // Services
-import { addMessage } from "../services/message.service.js";
+import { addMessage, getMessagesFromTo } from "../services/message.service.js";
 
 // Response handler
 import { success, error } from "../utils/responseHandlers.js";
@@ -26,9 +26,9 @@ export const sendMessage = async (req, res) => {
     imageUrl = uploadResult.url;
   }
 
-  const { data, error: err } = await addMessage([
+  const { data, error: err } = await addMessage(
     { text, image: imageUrl, sender_id, receiver_id }
-  ]);
+  );
 
   
   if (err || data.length === 0) {
@@ -37,3 +37,25 @@ export const sendMessage = async (req, res) => {
 
   return success(res, data[0], 201);
 };
+
+
+// Get messages by senderid and receiverid
+export const getMessages = async (req, res) => {
+  const receiver_id = req.params.receiver_id;
+  const sender_id = req.user.id;
+
+  if(!receiver_id){
+    return error(res, 'Receiver ID required', 400);
+  }
+  if(!sender_id){
+    return error(res, 'Sender ID required', 400);
+  }
+
+  const { data, error: err } = await getMessagesFromTo(sender_id, receiver_id);
+
+  if(err){
+    return error(res, err.message, 400);
+  } else {
+    return success(res, data);
+  }
+}
