@@ -12,10 +12,12 @@ import { getUsers,addUser, getUserByEmail } from '../services/user.service.js';
 
 // Fetch All Users Controller
 export const getAllUsers = async (req, res) => {
-  const { data, error } = await getUsers();
+  const user = req.user;
+  
+  const { data, error: err } = await getUsers(user.id);
 
-  if (error || !data) {
-    return error(res, error?.message || 'Something went wrong');
+  if (err || !data) {
+    return error(res, err?.message || 'Something went wrong');
   }
 
   return success(res, data);
