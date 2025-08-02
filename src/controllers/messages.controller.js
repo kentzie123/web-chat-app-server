@@ -26,10 +26,6 @@ export const sendMessage = async (req, res) => {
     imageUrl = uploadResult.url;
   }
 
-  if(!text){
-    return
-  }
-
   const { data, error: err } = await addMessage(
     { text, image: imageUrl, sender_id, receiver_id }
   );
@@ -47,7 +43,6 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   const receiver_id = req.params.receiver_id;
   const sender_id = req.user.id;
-  
 
   if(!receiver_id){
     return error(res, 'Receiver ID required', 400);
@@ -57,6 +52,7 @@ export const getMessages = async (req, res) => {
   }
 
   const { data, error: err } = await getMessagesFromTo(sender_id, receiver_id);
+  console.log(data);
   
   if(err){
     return error(res, err.message, 400);
