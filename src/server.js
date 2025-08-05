@@ -16,7 +16,7 @@ import supabase from './config/db.js';
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIO(server, {
+export const io = new SocketIO(server, {
   cors: {
     origin: '*',
   },
@@ -54,30 +54,51 @@ supabase
 const PORT = process.env.PORT || 5000;
 
 // used to store online users
-const userSocketMap = {}; // {userId: socketId}
+// export const userSocketMap = {}; // {userId: socketId}
+
+// io.on("connection", (socket) => {
+//   console.log("A user connected", socket.id);
+//   const userId = socket.handshake.query.userId;
+
+//   if(userId){
+//     if(!Object.keys(userSocketMap).includes(userId)){
+//       userSocketMap[userId] = socket.id;
+//     }
+//   }
+  
+//   console.log(userSocketMap);
+  
+//   // io.emit() is used to send events to all the connected clients
+//   io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected", socket.id);
+
+//     const exists = Object.values(userSocketMap).includes(socket.id);
+//     if(exists){
+//       delete userSocketMap[userId];
+//       io.emit("getOnlineUsers", Object.keys(userSocketMap));
+//     }
+//   });
+// });
+
+export const userSocketMap = {}; // {userId: socketId}
 
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
-  const userId = socket.handshake.query.userId;
 
-  if(!Object.keys(userSocketMap).includes(userId)){
-    if (userId) userSocketMap[userId] = socket.id;
-  }
+  const userId = socket.handshake.query.userId;
+  if (userId) userSocketMap[userId] = socket.id;
   console.log(userSocketMap);
   
   // io.emit() is used to send events to all the connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-
-
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
-
-    const exists = Object.values(userSocketMap).includes(socket.id);
-    if(exists){
-      delete userSocketMap[userId];
-      io.emit("getOnlineUsers", Object.keys(userSocketMap));
-    }
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 

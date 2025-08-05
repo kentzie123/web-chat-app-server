@@ -6,7 +6,6 @@ export const uploadImage = async (filePath) => {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: 'web-chat-app',
     });
-    console.log('Done UPLOADED!!');
     
     return { success: true, url: result.secure_url };
   } catch (error) {
