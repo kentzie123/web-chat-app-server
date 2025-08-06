@@ -14,17 +14,27 @@ import messageRoutes from './routes/messages.route.js';
 // Supabase connection
 import supabase from './config/db.js';
 
+const allowedOrigins = ['http://localhost:5173', 'http://192.168.1.5:5173'];
+
 const app = express();
 const server = http.createServer(app);
 export const io = new SocketIO(server, {
   cors: {
-    origin: '*',
+    origin: allowedOrigins,
+    credentials: true
   },
 });
 
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true             
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 app.use(express.json({limit: '15mb'}));
 app.use(cookieParser()); 
@@ -53,35 +63,6 @@ supabase
 
 const PORT = process.env.PORT || 5000;
 
-// used to store online users
-// export const userSocketMap = {}; // {userId: socketId}
-
-// io.on("connection", (socket) => {
-//   console.log("A user connected", socket.id);
-//   const userId = socket.handshake.query.userId;
-
-//   if(userId){
-//     if(!Object.keys(userSocketMap).includes(userId)){
-//       userSocketMap[userId] = socket.id;
-//     }
-//   }
-  
-//   console.log(userSocketMap);
-  
-//   // io.emit() is used to send events to all the connected clients
-//   io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
-
-//   socket.on("disconnect", () => {
-//     console.log("A user disconnected", socket.id);
-
-//     const exists = Object.values(userSocketMap).includes(socket.id);
-//     if(exists){
-//       delete userSocketMap[userId];
-//       io.emit("getOnlineUsers", Object.keys(userSocketMap));
-//     }
-//   });
-// });
 
 export const userSocketMap = {}; // {userId: socketId}
 
@@ -102,6 +83,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
