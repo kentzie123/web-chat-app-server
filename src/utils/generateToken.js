@@ -7,8 +7,8 @@ export const generateToken = (user, res) => {
 
   res.cookie("chat_token", token, {
     httpOnly: true,
-    secure: false, // true if using HTTPS
-    sameSite: "lax",
+    secure: true, // true if using HTTPS
+    sameSite: "None", // "None" if not same host change to "lax" for developments
   });
   
   return token;
