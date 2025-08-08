@@ -7,7 +7,9 @@ import { getAllUsers, signUp, login, logout, checkAuth } from '../controllers/au
 // Middleware
 import { verifyToken } from '../middleware/verifyToken.js';
 
-
+router.get('/test', async(req, res)=> {
+   res.status(200).json({ message: 'Test successful!' });
+})
 router.get('/getUsers', verifyToken, getAllUsers);
 router.post('/signup', signUp);
 router.post('/login', login);
