@@ -1,10 +1,10 @@
 import cloudinary from '../config/cloudinary.js';
 
-export const uploadImage = async (filePath) => {
+export const uploadImage = async (filePath, folder) => {
   try {
     // console.log('Uploading image from:', filePath);
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'web-chat-app',
+      folder: `web-chat-app/${folder}`,
     });
     
     return { success: true, url: result.secure_url };

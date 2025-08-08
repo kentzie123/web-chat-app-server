@@ -52,7 +52,7 @@ export const signUp = async (req, res) => {
     id: userInfo.id,
     fullname: userInfo.fullname,
     email: userInfo.email,
-    profilePic: userInfo.profile_pic
+    profile_pic: userInfo.profile_pic
   }, 201);
 }
 
@@ -84,7 +84,7 @@ export const login = async(req, res) => {
     id: userInfo.id,
     fullname: userInfo.fullname,
     email: userInfo.email,
-    profilePic: userInfo.profile_pic
+    profile_pic: userInfo.profile_pic
   }, 200);
 }
 

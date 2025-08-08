@@ -19,7 +19,7 @@ export const sendMessage = async (req, res) => {
   let imageUrl = null;
 
   if (image) {
-    const uploadResult = await uploadImage(image);
+    const uploadResult = await uploadImage(image, 'message-pictures');
 
     if (!uploadResult.success) {
       return error(res, uploadResult.error, 400);
