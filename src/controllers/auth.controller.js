@@ -122,7 +122,7 @@ export const checkAuth = (req, res) => {
     const { data, error: err } = getUserById(userInfo.id);
 
     if(err || data.length === 0){
-      return error(res, "No user found!")
+      return error(res, "No user found!", 404)
     }
     return success(res, data[0]);
 };
