@@ -68,8 +68,24 @@ const PORT = process.env.PORT || 5000;
 export const userSocketMap = {}; // {userId: socketId}
 
 io.on("connection", (socket) => {
-  console.log("A user connected", socket.id);
 
+  socket.on("join-room", (roomId) => {
+    socket.join(roomId);
+  });
+
+  socket.on("offer", ({ offer, roomId }) => {
+    socket.to(roomId).emit("offer", offer);
+  });
+
+  socket.on("answer", ({ answer, roomId }) => {
+    socket.to(roomId).emit("answer", answer);
+  });
+
+  socket.on("ice-candidate", ({ candidate, roomId }) => {
+    socket.to(roomId).emit("ice-candidate", candidate);
+  });
+
+  console.log("A user connected", socket.id);
   const userId = socket.handshake.query.userId;
   if (userId) userSocketMap[userId] = socket.id;
   console.log(userSocketMap);
