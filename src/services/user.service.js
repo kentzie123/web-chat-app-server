@@ -5,6 +5,7 @@ export const getUserById = async(userId) => {
   .from("users")
   .select("id, fullname, email, profile_pic")
   .eq("id", userId)
+  .single();
 }
 
 export const getUsers = async (userId) => {

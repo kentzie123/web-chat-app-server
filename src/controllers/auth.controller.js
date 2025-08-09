@@ -6,7 +6,12 @@ import { generateToken } from "../utils/generateToken.js";
 import { success, error } from "../utils/responseHandlers.js";
 
 // Services
-import { getUsers, addUser, getUserByEmail, getUserById } from "../services/user.service.js";
+import {
+  getUsers,
+  addUser,
+  getUserByEmail,
+  getUserById,
+} from "../services/user.service.js";
 
 // Fetch All Users Controller
 export const getAllUsers = async (req, res) => {
@@ -115,14 +120,19 @@ export const logout = (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
-    const userInfo = req.user;
+  const userInfo = req.user;
 
-    if(!userInfo) return error(res, "Unauthorized", 401);
+  if (!userInfo) return error(res, "Unauthorized", 401);
 
-    const { data, error: err } = getUserById(userInfo.id);
+  const { data, error: err } = getUserById(userInfo.id);
 
-    if(err || data.length === 0){
-      return error(res, "No user found!", 404)
-    }
-    return success(res, data[0]);
+  if (err || data.length === 0) {
+    return error(res, "No user found!", 404);
+  }
+  return success(res, {
+    id: data.id,
+    fullname: data.fullname,
+    email: data.email,
+    profile_pic: data.profile_pic,
+  });
 };
