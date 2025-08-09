@@ -15,7 +15,7 @@ import userRoutes from './routes/user.route.js';
 // Supabase connection
 // import supabase from './config/db.js';
 
-const allowedOrigins = ['https://chattrixx.netlify.app'];
+const allowedOrigins = ['https://chattrixx.netlify.app', 'http://192.168.1.5:5174'];
 
 const app = express();
 const server = http.createServer(app);
