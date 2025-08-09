@@ -120,19 +120,10 @@ export const logout = (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
-  const userInfo = req.user;
-
-  if (!userInfo) return error(res, "Unauthorized", 401);
-
-  const { data, error: err } = getUserById(userInfo.id);
-
-  if (err || data.length === 0) {
-    return error(res, "No user found!", 404);
+  try {
+    return success(res, req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    return error(res, "Internal Server Error");
   }
-  return success(res, {
-    id: data.id,
-    fullname: data.fullname,
-    email: data.email,
-    profile_pic: data.profile_pic,
-  });
 };
