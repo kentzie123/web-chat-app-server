@@ -14,7 +14,7 @@ export const updateUser = async (req, res) => {
   if (updatedFields.profile_pic) {
     const uploadResult = await uploadImage(
       updatedFields.profile_pic,
-      "message-pictures"
+      "profile-pictures"
     );
     if (!uploadResult.success) {
       return error(res, "Upload image failed", 400);
