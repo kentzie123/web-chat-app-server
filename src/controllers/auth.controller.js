@@ -6,7 +6,7 @@ import { generateToken } from "../utils/generateToken.js";
 import { success, error } from "../utils/responseHandlers.js";
 
 // Services
-import { getUsers, addUser, getUserByEmail } from "../services/user.service.js";
+import { getUsers, addUser, getUserByEmail, getUserById } from "../services/user.service.js";
 
 // Fetch All Users Controller
 export const getAllUsers = async (req, res) => {
@@ -115,10 +115,14 @@ export const logout = (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
-  try {
-    return success(res, req.user);
-  } catch (error) {
-    console.log("Error in checkAuth controller", error.message);
-    return error(res, "Internal Server Error");
-  }
+    const userInfo = req.user;
+
+    if(!userInfo) return error(res, "Unauthorized", 401);
+
+    const { data, error: err } = getUserById(userInfo.id);
+
+    if(err || data.length === 0){
+      return error(res, "No user found!")
+    }
+    return success(res, data[0]);
 };

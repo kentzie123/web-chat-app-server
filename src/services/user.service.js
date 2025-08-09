@@ -1,5 +1,12 @@
 import supabase from "../config/db.js";
 
+export const getUserById = async(userId) => {
+  return await supabase
+  .from("users")
+  .select("id, fullname, email, profile_pic")
+  .eq("id", userId)
+}
+
 export const getUsers = async (userId) => {
   return await supabase
     .from("users")
