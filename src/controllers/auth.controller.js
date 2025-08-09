@@ -119,12 +119,12 @@ export const logout = (req, res) => {
   }
 };
 
-export const checkAuth = (req, res) => {
+export const checkAuth = async(req, res) => {
   const userInfo = req.user;
 
   if (!userInfo) return error(res, "Unauthorized", 401);
 
-  const { data, error: err } = getUserById(userInfo.id);
+  const { data, error: err } = await getUserById(userInfo.id);
 
   if (err || data.length === 0) {
     return error(res, "No user found!", 404);
