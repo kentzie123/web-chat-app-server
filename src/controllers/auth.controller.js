@@ -111,11 +111,14 @@ export const login = async (req, res) => {
 // Logout user
 export const logout = (req, res) => {
   try {
-    res.cookie("chat_token", "", { httpOnly: true, maxAge: 0 });
-    return success(res, "Logged out successfully.");
+    res.clearCookie("chat_token", {
+      httpOnly: true,
+      secure: true, // true if using HTTPS
+      sameSite: "None", // "None" if not same host change to "lax" for development
+    });
+    return success(res, "Logged out successfully");
   } catch (err) {
-    console.error("Error in logout:", err.message);
-    return error(res, "Internal Server Error");
+    return error(res, "Something went wrong", 500);
   }
 };
 
