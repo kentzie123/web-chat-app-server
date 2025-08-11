@@ -79,13 +79,16 @@ io.on("connection", (socket) => {
   socket.on("call-user", ({ targetId, callerInfo }) => {
     io.to(userSocketMap[targetId]).emit("incoming-call", {
       fromSocketId: socket.id,
-      callerInfo
-    })
+      callerInfo,
+    });
   });
 
-  socket.on("reject-call", ({callerUserId })=>{
-    io.to(userSocketMap[callerUserId ]).emit("call-rejected");
-  })
+  socket.on("reject-call", ({ callerUserId }) => {
+    const callerSocketId = userSocketMap[callerUserId];
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("call-rejected");
+    }
+  });
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
