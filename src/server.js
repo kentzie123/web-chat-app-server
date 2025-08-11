@@ -76,12 +76,16 @@ io.on("connection", (socket) => {
   // io.emit() is used to send events to all the connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  socket.on("call-user", ({ targetId }) => {
-    io.to(userSocketMap[targetId]).emit("incoming-call", {
+  socket.on("call-user", ({ callerInfo }) => {
+    io.to(userSocketMap[callerInfo.id]).emit("incoming-call", {
       fromSocketId: socket.id,
-      fromUserId: userId
+      callerInfo
     })
   });
+
+  socket.on("reject-call", ({callerUserId })=>{
+    io.to(userSocketMap[callerUserId ]).emit("call-rejected");
+  })
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
