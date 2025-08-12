@@ -76,10 +76,12 @@ io.on("connection", (socket) => {
   // io.emit() is used to send events to all the connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  socket.on("call-user", ({ targetId, callerInfo }) => {
-    io.to(userSocketMap[targetId]).emit("incoming-call", {
+  socket.on("call-user", ({ targetId, callerInfo, offer }) => {
+    const targetSocketId = userSocketMap[targetId];
+    io.to(targetSocketId).emit("incoming-call", {
       fromSocketId: socket.id,
       callerInfo,
+      offer,
     });
   });
 
@@ -89,6 +91,30 @@ io.on("connection", (socket) => {
       io.to(callerSocketId).emit("call-rejected");
     }
   });
+
+  socket.on("answer-call", ({ callerUserId, answer }) => {
+    const callerSocketId = userSocketMap[callerUserId];
+
+    if (!callerSocketId) {
+      console.log("Caller is no longer connected, can't send answer.");
+      return;
+    }
+
+    io.to(callerSocketId).emit("call-answered", { answer });
+  });
+
+  // Listen for ICE candidates from clients
+  socket.on("ice-candidate", ({ targetId, candidate }) => {
+    const targetSocketId = userSocketMap[targetId];
+    if (targetSocketId) {
+      io.to(targetSocketId).emit("ice-candidate", { candidate });
+    }
+  });
+
+  socket.on("end-call", ({ targetId }) => {
+    const targetSocketId = userSocketMap[targetId];
+    io.to(targetSocketId).emit("call-ended");
+  })
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
