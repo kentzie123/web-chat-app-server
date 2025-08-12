@@ -92,15 +92,15 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("answer-call", ({ callerUserId, answer }) => {
+  socket.on("answer-call", ({ fromUserInfo, callerUserId, answer }) => {
     const callerSocketId = userSocketMap[callerUserId];
-
+    
     if (!callerSocketId) {
       console.log("Caller is no longer connected, can't send answer.");
       return;
     }
 
-    io.to(callerSocketId).emit("call-answered", { answer });
+    io.to(callerSocketId).emit("call-answered", { callerInfo: fromUserInfo, answer });
   });
 
   // Listen for ICE candidates from clients
