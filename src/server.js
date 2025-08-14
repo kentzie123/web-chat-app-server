@@ -12,8 +12,6 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/messages.route.js";
 import userRoutes from "./routes/user.route.js";
 
-// Supabase connection
-// import supabase from './config/db.js';
 
 const allowedOrigins = [
   "https://chattrixx.netlify.app",
@@ -49,19 +47,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 
-// supabase
-// .channel('public:messages')
-// .on(
-//   'postgres_changes',
-//   {
-//     event: 'INSERT',
-//     schema: 'public',
-//     table: 'messages',
-//   },
-//   (newSentMessage) => {
-//     // console.log('New message', newSentMessage.new);
-//   }
-// ).subscribe();
 
 const PORT = process.env.PORT || 5000;
 
